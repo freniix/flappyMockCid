@@ -1,4 +1,4 @@
-const spkrButtonIcon = document.querySelector("#score-board button i");
+const spkrButtonIcon = document.querySelector("#speaker i");
 const pole = document.querySelector(".pole");
 const hole = document.querySelector(".hole");
 const char = document.querySelector("#character");
@@ -23,7 +23,7 @@ function speakerToggle() {
 }
 
 document.addEventListener("click", (e) => {
-  if (e.target.closest("#reset-btn") || e.target.closest("#speaker")) return;
+  if (e.target.closest("#reset-btn") || e.target.closest("#speaker") || e.target.closest("#game-over")) return;
   if (!jumpAudio.paused) {
     jumpAudio.pause;
     jumpAudio.currentTime = 0;
@@ -46,10 +46,12 @@ pole.addEventListener("animationiteration", () => {
 
 setInterval(() => {
   if (isJumping || isGameOver) return;
+  
   const currentPos = parseInt(window.getComputedStyle(char).top);
-  if (currentPos === 600 - 60) {
+  if (currentPos > 600 - 70) {
     gameOver();
   }
+
   if (currentPos >= 600 - 60) {
     return;
   }
@@ -82,7 +84,7 @@ function gameOver() {
     jumpAudio.pause();
     jumpAudio.currentTime = 0;
   }
-  gameOverScr.style.display = "grid";
+  gameOverScr.style.display = "flex";
   // if(!isMuted)  gameOverAudio.play();
   gameOverAudio.play();
   pole.style.animationPlayState = "paused";
