@@ -1,60 +1,100 @@
 const spkrButtonIcon = document.querySelector("#speaker i");
-const pole = document.querySelector(".pole");
-const hole = document.querySelector(".hole");
+const poles = document.querySelectorAll(".pole");
+const topPoles = document.querySelectorAll(".top-pole");
+const bottomPoles = document.querySelectorAll(".bottom-pole");
+
 const char = document.querySelector("#character");
 const scoreEl = document.querySelector("#score");
-const gameOverScr = document.querySelector('#game-over')
+const gameOverScr = document.querySelector("#game-over");
+const gameBoard = document.querySelector("#game-board");
 //initializing audio
-const jumpAudio = new Audio("./assets/jumpAudio.mp3");
+const cidAudio = [];
 const gameOverAudio = new Audio("./assets/gameOver.mp3");
 
+//variables
 let isMuted = false;
 let isJumping = false;
 let jumpInterval = null;
 let isGameOver = false;
+let currAudioIndex = genRanNum(cidAudio.length);
 let score = 0;
+
+(() => {
+  // initializing audio
+  for (let i = 1; i <= 5; i++) {
+    const audio = new Audio(`./assets/cid${i}.mp3`);
+    cidAudio.push(audio);
+  }
+
+})();
+
+// if(window.innerWidth === 500)
+//initializing pole position for the first time
+function initializePolesPos(){
+    poles.forEach((item) => {
+    const rand = genRanNum(200);
+    item.style.top = `${-rand}px`;
+  });
+}
+
+initializePolesPos();
 function speakerToggle() {
   spkrButtonIcon.className = isMuted
     ? "ri-volume-up-line"
     : "ri-volume-mute-line";
   isMuted = !isMuted;
-  jumpAudio.volume = isMuted ? 0 : 1;
-  gameOverAudio.volume = isMuted? 0 : 1;
+  cidAudio.forEach((item) => (item.volume = isMuted ? 0 : 1));
+  gameOverAudio.volume = isMuted ? 0 : 1;
 }
 
-document.addEventListener("click", (e) => {
-  if (e.target.closest("#reset-btn") || e.target.closest("#speaker") || e.target.closest("#game-over")) return;
-  if (!jumpAudio.paused) {
-    jumpAudio.pause;
-    jumpAudio.currentTime = 0;
+function playRandomAudio() {
+  let curr = cidAudio[currAudioIndex];
+  if (!curr.paused) {
+    curr.pause();
+    curr.currentTime = 0;
   }
-  if(!gameOverAudio.paused){
-    gameOverAudio.pause();
-    gameOverAudio.currentTime = 0;
-  }
-  jumpAudio.play();
-  // if(!isMuted)  jumpAudio.play();
-  //better if you want it not to play if speaker is off but i prefer it to play so i can hear it midway
-  jump();
-});
+  currAudioIndex = genRanNum(cidAudio.length);
+  cidAudio[currAudioIndex].play();
+}
+function genRanNum(times) {
+  return Math.floor(Math.random() * times);
+}
 
-pole.addEventListener("animationiteration", () => {
-  score+=10;
-  const random = Math.floor(Math.random() * 400);
-  hole.style.top = random + "px";
+function gameLogic(e) {
+  if(isGameOver) return;
+  if (
+    e.target.closest("#reset-btn") ||
+    e.target.closest("#speaker") ||
+    e.target.closest("#game-over")
+  )
+    return;
+  playRandomAudio();
+  jump();
+}
+document.addEventListener("click", (e) => gameLogic(e));
+document.addEventListener("keydown", (e) => gameLogic(e));
+poles.forEach((item, index) => {
+  item.addEventListener("animationiteration", () => {
+    score += 10;
+    random = genRanNum(200);
+    item.style.top = `${-random}px`;
+  });
 });
 
 setInterval(() => {
   if (isJumping || isGameOver) return;
-  
   const currentPos = parseInt(window.getComputedStyle(char).top);
-  if (currentPos > 600 - 70) {
-    gameOver();
-  }
+  topPoles.forEach((elem) => {
+    if (isHit(char, elem)) {
+      gameOver();
+    }
+  });
+  bottomPoles.forEach((elem) => {
+    if (isHit(char, elem)) {
+      gameOver();
+    }
+  });
 
-  if (currentPos >= 600 - 60) {
-    return;
-  }
   char.style.top = currentPos + 2 + "px";
 }, 10);
 
@@ -70,37 +110,56 @@ function jump() {
     }
     char.style.top = currentPos - 3 + "px";
     iterationCount++;
-    if (iterationCount > 30) {
+    if (iterationCount > 20) {
       clearInterval(jumpInterval);
       isJumping = false;
     }
   }, 10);
 }
 
+function isHit(a, b) {
+  const aPos = a.getBoundingClientRect();
+  const bPos = b.getBoundingClientRect();
+  return (
+    aPos.top-10 < bPos.bottom &&
+    aPos.left-10 < bPos.right &&
+    aPos.bottom-10 > bPos.top &&
+    aPos.right-10 > bPos.left
+  );
+}
+setInterval(() => {
+  let hi = char.getBoundingClientRect().bottom;
+  console.log(hi);
+}, 50);
+
 function gameOver() {
   isGameOver = true;
   scoreEl.textContent = score;
-  if (!jumpAudio.paused) {
-    jumpAudio.pause();
-    jumpAudio.currentTime = 0;
+  const curr = cidAudio[currAudioIndex];
+  if (!curr.paused) {
+    curr.pause();
+    curr.currentTime = 0;
   }
   gameOverScr.style.display = "flex";
-  // if(!isMuted)  gameOverAudio.play();
   gameOverAudio.play();
-  pole.style.animationPlayState = "paused";
+  poles.forEach((item) => (item.style.animationPlayState = "paused"));
 }
 
 function resetGame() {
   char.style.top = "200px";
-  pole.style.animation = "none";
-  pole.offsetHeight;
-  pole.style.left = "0";
-  pole.style.animation = " pole 3s infinite linear";
-  if (!gameOverAudio.paused) {
-    gameOverAudio.pause();
-    gameOver.currentTime = 0;
-  }
-  gameOverScr.style.display = "none";
+  score = 0;
   isGameOver = false;
   isJumping = false;
+
+  poles.forEach((item, index) => {
+    item.style.animation = "none";
+    item.offsetHeight;
+    item.style.left = "0";
+    item.style.animation = "pole 3s infinite linear";
+    item.style.animationDelay = `${index * 0.75}s`;
+  });
+  gameOverAudio.currentTime = 0;
+  gameOverAudio.pause();
+  gameOverScr.style.display = "none";
+  initializePolesPos();
 }
