@@ -2,6 +2,8 @@ const spkrButtonIcon = document.querySelector("#score-board button i");
 const pole = document.querySelector(".pole");
 const hole = document.querySelector(".hole");
 const char = document.querySelector("#character");
+const scoreEl = document.querySelector("#score");
+const gameOverScr = document.querySelector('#game-over')
 //initializing audio
 const jumpAudio = new Audio("./assets/jumpAudio.mp3");
 const gameOverAudio = new Audio("./assets/gameOver.mp3");
@@ -10,7 +12,7 @@ let isMuted = false;
 let isJumping = false;
 let jumpInterval = null;
 let isGameOver = false;
-
+let score = 0;
 function speakerToggle() {
   spkrButtonIcon.className = isMuted
     ? "ri-volume-up-line"
@@ -37,6 +39,7 @@ document.addEventListener("click", (e) => {
 });
 
 pole.addEventListener("animationiteration", () => {
+  score+=10;
   const random = Math.floor(Math.random() * 400);
   hole.style.top = random + "px";
 });
@@ -74,10 +77,12 @@ function jump() {
 
 function gameOver() {
   isGameOver = true;
+  scoreEl.textContent = score;
   if (!jumpAudio.paused) {
     jumpAudio.pause();
     jumpAudio.currentTime = 0;
   }
+  gameOverScr.style.display = "grid";
   // if(!isMuted)  gameOverAudio.play();
   gameOverAudio.play();
   pole.style.animationPlayState = "paused";
@@ -93,7 +98,7 @@ function resetGame() {
     gameOverAudio.pause();
     gameOver.currentTime = 0;
   }
-
+  gameOverScr.style.display = "none";
   isGameOver = false;
   isJumping = false;
 }

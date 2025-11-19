@@ -10,10 +10,18 @@
   <script src="./script.js"  defer></script>
 </head>
 <body>
-  <div id="score-board">
-    <button id="speaker" onclick="speakerToggle()"><i class="ri-volume-up-line"></i></button>
+  <div id="game-over">
+    <div id="score-board">
+
+    <h1>Game Over!</h1>
+    <h2>Score: <span id="score">0</span></h2>
     <button id="reset-btn" onclick="resetGame()">Reset</button>
     </div>
+
+  </div>
+
+    <button id="speaker" onclick="speakerToggle()"><i class="ri-volume-up-line"></i></button>
+
   <div id="game-board">
 
     <div class="pole">

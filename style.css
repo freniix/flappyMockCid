@@ -23,7 +23,7 @@ body{
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.171);
 
 }
-#score-board{
+#speaker{
   /* width: 80px;
   height: 200px; */
   /* background-color: rgb(255, 255, 255); */
@@ -31,8 +31,7 @@ body{
   right: 2%;
   top: 2%;
 }
-#score-board button {
-
+ button{
   display: block;
   margin: 1rem auto;
   padding: 1rem;
@@ -46,15 +45,17 @@ body{
   font-size: 15px;
   transition: all 0.5s ease;
 }
-
-#score-board button:hover {
+#speaker{
+  z-index: 1000;
+}
+button:hover {
   letter-spacing: 3px;
   background-color: hsl(261deg 80% 48%);
   color: hsl(0, 0%, 100%);
   box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
 }
 
- #score-board button:active {
+ button:active, #game-over button {
   letter-spacing: 3px;
   background-color: hsl(261deg 80% 48%);
   color: hsl(0, 0%, 100%);
@@ -62,7 +63,7 @@ body{
   transform: translateY(10px);
   transition: 100ms;
 }
-#score-board button i{
+button i{
   font-size: 1.4rem;
 }
 .pole{
@@ -97,6 +98,27 @@ body{
   }
 }
 
+#game-over{
+  width: 100%;
+  height: 100dvh;
+  background-color: rgba(0, 0, 0, 0.096);
+  position:fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+#game-over #score-board{
+  color: hsl(256, 100%, 53%);
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+}
+
 @media (max-width: 500px) {
   #game-board{
     width: 90%;
@@ -108,9 +130,5 @@ body{
   .hole{
     width: 110%;
     left: -1px;
-  }
-  #score-board{
-    display: flex;
-    gap: 1rem;
   }
 }
