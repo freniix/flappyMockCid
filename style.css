@@ -19,7 +19,7 @@ body{
   background-color: white;
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 5px;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.171);
 
 }
@@ -94,5 +94,23 @@ body{
 @keyframes pole{
   from{
     left: 110%;
+  }
+}
+
+@media (max-width: 500px) {
+  #game-board{
+    width: 90%;
+    /* background-color: red; */
+  }
+  .pole{
+    width: 30px;
+  }
+  .hole{
+    width: 110%;
+    left: -1px;
+  }
+  #score-board{
+    display: flex;
+    gap: 1rem;
   }
 }

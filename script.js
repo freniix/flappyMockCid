@@ -26,6 +26,10 @@ document.addEventListener("click", (e) => {
     jumpAudio.pause;
     jumpAudio.currentTime = 0;
   }
+  if(!gameOverAudio.paused){
+    gameOverAudio.pause();
+    gameOverAudio.currentTime = 0;
+  }
   jumpAudio.play();
   // if(!isMuted)  jumpAudio.play();
   //better if you want it not to play if speaker is off but i prefer it to play so i can hear it midway
