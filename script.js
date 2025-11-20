@@ -86,7 +86,7 @@ poles.forEach((item, index) => {
 
 
 
-function gameLoop(){
+setInterval(()=>{
   if (isJumping || isGameOver) return;
   const currentPos = parseInt(window.getComputedStyle(char).top);
   topPoles.forEach((elem) => {
@@ -101,10 +101,7 @@ function gameLoop(){
   });
 
   char.style.top = currentPos + 2 + "px";
-  requestAnimationFrame(gameLoop);
-
-}
-requestAnimationFrame(gameLoop)
+},20);
 
 function jump() {
   if (jumpInterval) clearInterval(jumpInterval);
