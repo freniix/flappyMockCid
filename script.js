@@ -73,6 +73,9 @@ function gameLogic(e) {
 }
 document.addEventListener("click", (e) => gameLogic(e));
 document.addEventListener("keydown", (e) => gameLogic(e));
+
+
+
 poles.forEach((item, index) => {
   item.addEventListener("animationiteration", () => {
     score += 10;
@@ -81,7 +84,9 @@ poles.forEach((item, index) => {
   });
 });
 
-setInterval(() => {
+
+
+function gameLoop(){
   if (isJumping || isGameOver) return;
   const currentPos = parseInt(window.getComputedStyle(char).top);
   topPoles.forEach((elem) => {
@@ -96,7 +101,10 @@ setInterval(() => {
   });
 
   char.style.top = currentPos + 2 + "px";
-}, 10);
+  requestAnimationFrame(gameLoop);
+
+}
+requestAnimationFrame(gameLoop)
 
 function jump() {
   if (jumpInterval) clearInterval(jumpInterval);
